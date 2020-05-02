@@ -18,6 +18,17 @@ class Todo(db.Model):
   def __repr__(self):
     return f'<Todo {self.id} {self.description}>'
 
+@app.route('/todos/<todo_id>', methods=['DELETE'])
+def delete_todo(todo_id):
+  try:
+    Todo.query.filter_by(id=todo_id).delete()
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return jsonify({ 'success': True })
+
 # note: more conventionally, we would write a
 # POST endpoint to /todos for the create endpoint:
 # @app.route('/todos', method=['POST'])
